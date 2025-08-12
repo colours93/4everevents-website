@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0f10" />
+    <title>4everevents ♾️ — Wedding & Photography</title>
+    <meta name="description" content="4everevents ♾️ — Luxury wedding photography & films. Black / teal / light turquoise aesthetic. Timeless stories, artfully told." />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Icons (Remix Icon v4) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- Swiper v11 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Splitting.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.css" />
+
+    <style>
+      :root {
+        --black: #0b0f10;
+        --black-2: #0e1417;
+        --teal: #00a9a5;
+        --turquoise: #40e0d0;
+        --white: #eef7f7;
+        --muted: rgba(238, 247, 247, 0.65);
+        --glass: rgba(13, 17, 20, 0.65);
+        --accent-grad: linear-gradient(135deg, var(--teal), var(--turquoise));
+        --card-grad: radial-gradient(1000px 400px at 10% -20%, rgba(64, 224, 208, 0.18), transparent 60%), radial-gradient(900px 300px at 110% 120%, rgba(0, 169, 165, 0.15), transparent 60%);
+      }
+
+      /* Reset */
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--white);
+        background:
+          radial-gradient(1200px 800px at 80% -10%, rgba(64, 224, 208, 0.12), transparent 60%),
+          radial-gradient(900px 500px at -10% 110%, rgba(0, 169, 165, 0.12), transparent 60%),
+          var(--black);
+        overflow-x: hidden;
+      }
+
+      img { max-width: 100%; display: block; height: auto; }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+      .container { width: min(1120px, 92vw); margin-inline: auto; }
+
+      /* Buttons */
+      .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; will-change: transform; }
+      .btn-primary { background: var(--accent-grad); color: #001112; font-weight: 600; box-shadow: 0 10px 30px rgba(64, 224, 208, 0.2); }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(64, 224, 208, 0.32); }
+      .btn-ghost { border: 1px solid rgba(64, 224, 208, .35); color: var(--white); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+      .btn-ghost:hover { background: rgba(64, 224, 208, 0.08); transform: translateY(-2px); }
+
+      /* Preloader */
+      #preloader {
+        position: fixed; inset: 0; background: var(--black);
+        display: grid; place-items: center; z-index: 9999;
+        overflow: hidden;
+      }
+      .preloader-inner { display: grid; place-items: center; gap: 18px; text-align: center; }
+      .preloader-inner .logo-mark { font-family: 'Playfair Display', serif; font-weight: 800; letter-spacing: .5px; font-size: clamp(22px, 3.2vw, 36px); }
+      .preloader-inner .logo-mark .infinity { color: var(--turquoise); filter: drop-shadow(0 0 8px rgba(64,224,208,.45)); }
+      .infinity-wrap { width: 180px; height: 90px; }
+      .infinity-svg { width: 100%; height: 100%; filter: drop-shadow(0 6px 20px rgba(64,224,208,.25)); }
+      .infinity-svg path.base { stroke: rgba(255,255,255,.08); stroke-width: 5; fill: none; }
+      .infinity-svg path.runner {
+        stroke: url(#grad); stroke-width: 5; fill: none; stroke-linecap: round;
+        stroke-dasharray: 180 360; stroke-dashoffset: 0; animation: dash 1.4s ease-in-out infinite;
+      }
+      .progress-wrap { width: 240px; max-width: calc(100vw - 64px); height: 6px; background: rgba(255,255,255,.08); border-radius: 999px; overflow: hidden; position: relative; }
+      .progress-bar { height: 100%; width: 0%; background: var(--accent-grad); border-radius: 999px; box-shadow: 0 4px 16px rgba(64,224,208,.25); }
+      .progress-text { font-size: 12px; color: var(--muted); margin-top: 6px; letter-spacing: .12em; text-transform: uppercase; }
+      @keyframes dash { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -540; } }
+
+      /* Header */
+      .site-header { position: sticky; top: 0; z-index: 50; transition: background .3s ease, transform .3s ease, box-shadow .3s ease; }
+      .site-header .container { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+      .site-header::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,.5), transparent); opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+      .site-header.is-scrolled { background: rgba(8, 12, 14, .6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 6px 30px rgba(0,0,0,.25); }
+      .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .3px; }
+      .brand span { color: var(--turquoise); filter: drop-shadow(0 0 8px rgba(64,224,208,.35)); }
+      .nav { display: flex; align-items: center; gap: 10px; }
+      .nav-toggle { display: none; font-size: 22px; color: var(--white); }
+      .nav ul { display: flex; align-items: center; gap: 18px; list-style: none; margin: 0; padding: 0; }
+      .nav a { color: var(--muted); padding: 10px 12px; border-radius: 999px; transition: color .2s ease, background .2s ease; }
+      .nav a:hover { color: var(--white); background: rgba(255,255,255,.06); }
+      .nav .btn { margin-left: 6px; }
+
+      /* Hero */
+      .hero { position: relative; min-height: 92vh; display: grid; align-items: center; }
+      .hero-media { position: absolute; inset: 0; overflow: hidden; z-index: -1; }
+      .hero-media img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.8) brightness(.62) contrast(1.05); transform: scale(1.06); }
+      .hero::before {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(1200px 600px at 70% 10%, rgba(64,224,208,.18), transparent 60%), linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));
+        z-index: -1;
+      }
+      .hero-content { padding: clamp(72px, 10vh, 120px) 0; }
+      .headline { font-family: 'Playfair Display', serif; font-weight: 800; line-height: 1.02; font-size: clamp(36px, 6vw, 78px); letter-spacing: .2px; text-shadow: 0 8px 40px rgba(0,0,0,.35); }
+      .tagline { margin-top: 18px; color: var(--muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 720px; }
+      .cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+      .scroll-indicator { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,.7); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+      .scroll-indicator i { animation: bounce 1.6s ease-in-out infinite; opacity: .8; }
+      @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+      /* Sections */
+      .section { padding: clamp(64px, 9vw, 110px) 0; position: relative; }
+      .section-head { display: grid; gap: 10px; margin-bottom: 26px; }
+      .section-head h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); letter-spacing: .4px; }
+      .section-head p { color: var(--muted); }
+
+      /* Services */
+      .services .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+      @media (max-width: 920px) { .services .cards { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 620px) { .services .cards { grid-template-columns: 1fr; } }
+      .service-card {
+        position: relative; background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card-grad);
+        border: 1px solid rgba(255,255,255,.06); border-radius: 18px; padding: 22px; min-height: 180px;
+        overflow: hidden; transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; will-change: transform;
+      }
+      .service-card::before {
+        content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--accent-grad);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude; opacity: .2; pointer-events: none; transition: opacity .3s ease;
+      }
+      .service-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 25px 60px rgba(0,0,0,.35); border-color: rgba(64,224,208,.35); }
+      .service-card:hover::before { opacity: .42; }
+      .service-icon { width: 46px; height: 46px; border-radius: 12px; background: rgba(64,224,208,.12); display: grid; place-items: center; margin-bottom: 14px; color: var(--turquoise); box-shadow: inset 0 0 0 1px rgba(64,224,208,.22); }
+      .service-card h3 { margin: 4px 0 6px; font-size: 18px; letter-spacing: .3px; }
+      .service-card p { margin: 0; color: var(--muted); font-size: 14px; }
+      .shine { position: absolute; top: -120%; left: -120%; width: 240%; height: 240%; background: radial-gradient(closest-side, rgba(64,224,208,.18), transparent); transform: translate3d(0,0,0); pointer-events: none; transition: transform .2s ease; }
+
+      /* Gallery / Swiper */
+      .gallery { position: relative; }
+      .swiper { width: 100%; padding: 16px 0 42px; }
+      .swiper-slide { width: clamp(240px, 30vw, 420px); }
+      .slide-card { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.35); background: #0d1214; }
+      .slide-card img { width: 100%; height: clamp(260px, 40vw, 480px); object-fit: cover; filter: saturate(1.05) contrast(1.03); }
+      .slide-caption { position: absolute; left: 12px; bottom: 12px; padding: 8px 12px; border-radius: 12px; background: rgba(11, 15, 16, .55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-size: 13px; color: var(--muted); border: 1px solid rgba(255,255,255,.08); }
+      .swiper-button-prev, .swiper-button-next { color: var(--white); }
+      .swiper-pagination-bullet { background: rgba(255,255,255,.4); }
+      .swiper-pagination-bullet-active { background: var(--turquoise); }
+
+      /* Story */
+      .story .grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 26px; align-items: center; }
+      @media (max-width: 920px) { .story .grid { grid-template-columns: 1fr; } }
+      .story .frame { position: relative; border-radius: 16px; overflow: hidden; background: #0e1417; border: 1px solid rgba(255,255,255,.06); }
+      .story .frame img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.95); }
+      .story p { color: var(--muted); }
+
+      /* Contact CTA */
+      .contact { text-align: center; }
+      .contact .cta-grid { display: grid; gap: 18px; place-items: center; }
+      .contact h3 { font-family: 'Playfair Display', serif; font-size: clamp(24px, 3vw, 32px); }
+      .contact .sub { color: var(--muted); max-width: 720px; }
+
+      /* Footer */
+      footer { padding: 28px 0; border-top: 1px solid rgba(255,255,255,.06); color: rgba(255,255,255,.7); font-size: 14px; }
+      .footer-grid { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .social { display: flex; gap: 10px; }
+      .social a { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--white); }
+      .social a:hover { background: rgba(64,224,208,.18); color: var(--turquoise); }
+
+      /* Mobile Nav */
+      @media (max-width: 860px) {
+        .nav-toggle { display: inline-grid; place-items: center; }
+        .nav ul { position: absolute; top: 66px; right: 16px; left: 16px; background: rgba(10,14,16,.85); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; padding: 14px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: grid; gap: 4px; transform-origin: top right; transform: scale(.98); opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
+        .nav ul.show { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .nav .btn { width: 100%; justify-content: center; }
+      }
+
+      /* Scrollbar (WebKit) */
+      ::-webkit-scrollbar { width: 12px; height: 12px; }
+      ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(64,224,208,.55), rgba(0,169,165,.55)); border-radius: 999px; border: 3px solid rgba(0,0,0,.2); }
+      ::-webkit-scrollbar-track { background: rgba(255,255,255,.04); }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        * { animation: none !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="true">
+      <div class="preloader-inner">
+        <div class="logo-mark">4everevents <span class="infinity">♾️</span></div>
+        <div class="infinity-wrap" aria-hidden="true">
+          <svg class="infinity-svg" viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Loading">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#40e0d0" />
+                <stop offset="100%" stop-color="#00a9a5" />
+              </linearGradient>
+            </defs>
+            <!-- Infinity curve -->
+            <path class="base" d="M20,40 C20,15 60,15 80,40 C100,65 140,65 140,40 C140,15 100,15 80,40 C60,65 20,65 20,40 Z"/>
+            <path class="runner" d="M20,40 C20,15 60,15 80,40 C100,65 140,65 140,40 C140,15 100,15 80,40 C60,65 20,65 20,40 Z" />
+          </svg>
+        </div>
+        <div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-bar"></div>
+        </div>
+        <div class="progress-text" aria-live="polite">0%</div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header" id="header">
+      <div class="container">
+        <a href="#home" class="brand">4everevents <span>♾️</span></a>
+        <nav class="nav" aria-label="Primary">
+          <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
+            <i class="ri-menu-3-line"></i>
+          </button>
+          <ul id="navMenu">
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#story">About</a></li>
+            <li><a href="#contact" class="btn btn-primary"><i class="ri-calendar-event-line"></i> Book us</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+      <div class="hero-media" aria-hidden="true">
+        <img src="https://images.unsplash.com/photo-1522673607200-164d6fabfd94?q=80&w=1920&auto=format&fit=crop" alt="Wedding couple embracing under lights"/>
+      </div>
+      <div class="hero-content container">
+        <h1 class="headline" data-splitting>Timeless stories, <br/>artfully told.</h1>
+        <p class="tagline">Luxury wedding photography & films, crafted for the modern romantics. Black / teal / light turquoise — an aesthetic of clarity, emotion, and light.</p>
+        <div class="cta">
+          <a href="#portfolio" class="btn btn-primary"><i class="ri-image-2-line"></i> View portfolio</a>
+          <a href="#contact" class="btn btn-ghost"><i class="ri-chat-1-line"></i> Enquire now</a>
+        </div>
+      </div>
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll</span>
+        <i class="ri-arrow-down-line"></i>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section services">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-splitting>What we create</h2>
+          <p>From intimate vows to grand celebrations — we document every breath of your day in luminous color and elegant contrast.</p>
+        </div>
+        <div class="cards">
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-heart-3-line"></i></div>
+            <h3>Weddings</h3>
+            <p>Editorial storytelling that blends fine-art composition with genuine emotion.</p>
+          </article>
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-sparkling-2-line"></i></div>
+            <h3>Engagements</h3>
+            <p>Sun-kissed sessions tailored to your story — elegant, candid, and full of light.</p>
+          </article>
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-film-line"></i></div>
+            <h3>Cinematic Films</h3>
+            <p>Movement and music woven into time — a film you’ll feel forever.</p>
+          </article>
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-camera-lens-line"></i></div>
+            <h3>Editorial Portraits</h3>
+            <p>Magazine-grade portraits — refined details, luminous skin tones, pristine styling.</p>
+          </article>
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-sun-foggy-line"></i></div>
+            <h3>Destination</h3>
+            <p>From Amalfi to Kyoto — we travel worldwide to craft memories in dream light.</p>
+          </article>
+          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
+            <div class="shine"></div>
+            <div class="service-icon"><i class="ri-vip-diamond-line"></i></div>
+            <h3>Luxury Albums</h3>
+            <p>Museum-grade prints and hand-bound albums designed to last generations.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="portfolio" class="section gallery">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-splitting>Featured stories</h2>
+          <p>Swipe through our recent weddings and sessions — color, motion, and connection.</p>
+        </div>
+      </div>
+
+      <div class="swiper" id="gallerySwiper" aria-label="Featured gallery slider">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920&auto=format&fit=crop" alt="Bride and groom under golden hour light" />
+              <figcaption class="slide-caption">Golden hour vows</figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?q=80&w=1920&auto=format&fit=crop" alt="Intimate first dance" />
+              <figcaption class="slide-caption">The first dance</figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1920&auto=format&fit=crop" alt="Wedding party celebrating" />
+              <figcaption class="slide-caption">Joy in motion</figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1920&auto=format&fit=crop" alt="Engagement session by the sea" />
+              <figcaption class="slide-caption">Seaside engagement</figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1525286116112-b59af11adad1?q=80&w=1920&auto=format&fit=crop" alt="Bridal portrait with bouquet" />
+              <figcaption class="slide-caption">Floral grace</figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="slide-card">
+              <img src="https://images.unsplash.com/photo-1522673607200-22b14d7b7b6b?q=80&w=1920&auto=format&fit=crop" alt="Elegant table setting" />
+              <figcaption class="slide-caption">The details</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="swiper-button-prev" aria-label="Previous"></div>
+        <div class="swiper-button-next" aria-label="Next"></div>
+        <div class="swiper-pagination" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- Story -->
+    <section id="story" class="section story">
+      <div class="container">
+        <div class="grid">
+          <div>
+            <div class="section-head">
+              <h2 data-splitting>Poetry in light</h2>
+              <p>We believe in honest storytelling, cinematic pacing, and the alchemy of color and contrast. Our approach is calm and artful — directing lightly, noticing everything, and giving you space to feel.</p>
+            </div>
+            <div class="cta">
+              <a class="btn btn-primary" href="#contact"><i class="ri-sparkling-line"></i> Start a conversation</a>
+              <a class="btn btn-ghost" href="#portfolio"><i class="ri-image-add-line"></i> See more work</a>
+            </div>
+          </div>
+          <div class="frame">
+            <img src="https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=1920&auto=format&fit=crop" alt="Cinematic bridal portrait"/>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section id="contact" class="section contact">
+      <div class="container">
+        <div class="cta-grid">
+          <h3 data-splitting>Let’s create something unforgettable.</h3>
+          <p class="sub">We take on a limited number of weddings per year to ensure an intentional, artful experience. Share your date and vision, and we’ll craft a bespoke proposal.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="mailto:hello@4everevents.example?subject=Wedding%20Enquiry%20—%204everevents%20%E2%99%BE"><i class="ri-mail-line"></i> hello@4everevents.example</a>
+            <a class="btn btn-ghost" href="tel:+1234567890"><i class="ri-phone-line"></i> +1 (234) 567-890</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container footer-grid">
+        <div>© <span id="year"></span> 4everevents <span aria-hidden="true">♾️</span></div>
+        <div class="social" aria-label="Social links">
+          <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+          <a href="#" aria-label="TikTok"><i class="ri-tiktok-line"></i></a>
+          <a href="#" aria-label="YouTube"><i class="ri-youtube-line"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/splitting@1.0.6/dist/splitting.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.45/bundled/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+    <!-- App -->
+    <script>
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Mobile nav toggle
+      const navToggle = document.getElementById('navToggle');
+      const navMenu = document.getElementById('navMenu');
+      navToggle?.addEventListener('click', () => {
+        const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', String(!expanded));
+        navMenu.classList.toggle('show');
+      });
+      navMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        navMenu.classList.remove('show');
+        navToggle?.setAttribute('aria-expanded', 'false');
+      }));
+
+      // Sticky header state
+      const header = document.getElementById('header');
+      const setHeaderState = () => {
+        if (window.scrollY > 12) header.classList.add('is-scrolled'); else header.classList.remove('is-scrolled');
+      };
+      setHeaderState();
+      window.addEventListener('scroll', setHeaderState, { passive: true });
+
+      // Splitting (guarded)
+      if (window.Splitting) { try { Splitting(); } catch(e) {} }
+
+      // Lenis smooth scroll + ScrollTrigger sync (guarded)
+      let lenis = null;
+      if (window.Lenis) {
+        try {
+          lenis = new Lenis({
+            duration: 1.15,
+            smoothWheel: true,
+            smoothTouch: false,
+            easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+          });
+          function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+          requestAnimationFrame(raf);
+        } catch(e) {}
+      }
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        if (lenis && lenis.on) { lenis.on('scroll', ScrollTrigger.update); }
+      }
+
+      // Preloader progress via imagesLoaded
+      const preloader = document.getElementById('preloader');
+      const bar = preloader.querySelector('.progress-bar');
+      const text = preloader.querySelector('.progress-text');
+      const wrap = preloader.querySelector('.progress-wrap');
+      const updateProgress = (v) => {
+        const pct = Math.min(100, Math.max(0, Math.round(v * 100)));
+        bar.style.width = pct + '%';
+        text.textContent = pct + '%';
+        wrap.setAttribute('aria-valuenow', String(pct));
+      };
+
+      let total = 6, loaded = 0;
+      updateProgress(0);
+      if (window.imagesLoaded) {
+        const imgLoad = imagesLoaded(document.querySelectorAll('img'));
+        total = imgLoad.images?.length || total;
+        imgLoad.on('progress', () => { loaded++; updateProgress(loaded / Math.max(1, total)); });
+        imgLoad.on('always', () => finishPreloader());
+      } else {
+        // If imagesLoaded not available, fall back to window load
+        window.addEventListener('load', () => finishPreloader(true));
+      }
+      // Safety timeout in case of CDN delays
+      setTimeout(() => finishPreloader(true), 5500);
+      window.addEventListener('load', () => finishPreloader(true));
+
+      function finishPreloader(force = false) {
+        if (!preloader) return;
+        if (preloader.dataset.done) return;
+        if (!force && loaded < Math.ceil(total * 0.6)) return; // wait for most images
+        preloader.dataset.done = '1';
+        updateProgress(1);
+        if (!window.gsap) { preloader.remove(); return; }
+        const tl = gsap.timeline();
+        tl.to(preloader.querySelector('.infinity-wrap'), { y: -8, opacity: 0, duration: .35, ease: 'power2.out' })
+          .to(preloader.querySelector('.logo-mark'), { y: -10, opacity: 0, duration: .35, ease: 'power2.out' }, '<')
+          .to(preloader, { opacity: 0, duration: .45, ease: 'power2.out', onComplete: () => preloader.remove() });
+
+        // Hero intro
+        introAnimations();
+      }
+
+      // Hero + section reveals
+      function introAnimations() {
+        const headlineChars = document.querySelectorAll('.headline .char');
+        gsap.set(headlineChars, { yPercent: 120, rotate: 6, opacity: 0 });
+        gsap.to(headlineChars, { yPercent: 0, rotate: 0, opacity: 1, duration: .9, ease: 'power3.out', stagger: { each: 0.015, from: 'start' } });
+        gsap.from('.tagline', { y: 18, opacity: 0, duration: .7, delay: .2, ease: 'power2.out' });
+        gsap.from('.cta .btn', { y: 18, opacity: 0, duration: .7, delay: .28, ease: 'power2.out', stagger: .06 });
+      }
+
+      // Services reveal
+      gsap.utils.toArray('.service-card').forEach((el, i) => {
+        gsap.set(el, { y: 26, opacity: 0 });
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 80%',
+          once: true,
+          onEnter: () => gsap.to(el, { y: 0, opacity: 1, duration: .7, ease: 'power2.out', delay: (i % 3) * 0.06 })
+        });
+      });
+
+      // Shine effect tracking
+      document.querySelectorAll('.service-card').forEach(card => {
+        const shine = card.querySelector('.shine');
+        card.addEventListener('pointermove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          shine.style.transform = `translate(${x - rect.width * 0.5}px, ${y - rect.height * 0.5}px)`;
+        });
+      });
+
+      // VanillaTilt (guarded)
+      if (window.VanillaTilt) {
+        try {
+          VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+            speed: 600,
+            max: 10,
+            glare: true,
+            'max-glare': 0.25,
+            gyroscope: true
+          });
+        } catch(e) {}
+      }
+
+      // Swiper gallery
+      const swiper = window.Swiper ? new Swiper('#gallerySwiper', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        loop: true,
+        coverflowEffect: { rotate: 8, stretch: 0, depth: 180, modifier: 1.2, slideShadows: false },
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+        pagination: { el: '.swiper-pagination', clickable: true },
+        autoplay: { delay: 2600, disableOnInteraction: false },
+        breakpoints: {
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 }
+        }
+      }) : null;
+
+      // Story section reveal
+      gsap.utils.toArray('#story .grid > *').forEach((el, i) => {
+        gsap.set(el, { y: 28, opacity: 0 });
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 80%',
+          once: true,
+          onEnter: () => gsap.to(el, { y: 0, opacity: 1, duration: .7, ease: 'power2.out', delay: i * 0.12 })
+        });
+      });
+
+      // Contact section reveal
+      gsap.utils.toArray('#contact .cta-grid > *').forEach((el, i) => {
+        gsap.set(el, { y: 22, opacity: 0 });
+        ScrollTrigger.create({
+          trigger: '#contact', start: 'top 75%', once: true,
+          onEnter: () => gsap.to(el, { y: 0, opacity: 1, duration: .6, ease: 'power2.out', delay: i * 0.08 })
+        });
+      });
+    </script>
+  </body>
+</html>
+
+

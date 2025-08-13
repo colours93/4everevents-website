@@ -30,6 +30,13 @@
         --glass: rgba(13, 17, 20, 0.65);
         --accent-grad: linear-gradient(135deg, var(--teal), var(--turquoise));
         --card-grad: radial-gradient(1000px 400px at 10% -20%, rgba(64, 224, 208, 0.18), transparent 60%), radial-gradient(900px 300px at 110% 120%, rgba(0, 169, 165, 0.15), transparent 60%);
+        /* Card tuning variables */
+        --card-padding: 28px;
+        --service-icon-size: 52px;
+        --card-tilt-rotate-x: 6; /* degrees */
+        --card-tilt-rotate-y: 11; /* degrees */
+        --card-elev: 0 34px 68px rgba(0,0,0,.48);
+        --card-overlay-opacity: .12;
       }
 
       /* Reset */
@@ -126,14 +133,66 @@
       .section-head h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 42px); letter-spacing: .4px; }
       .section-head p { color: var(--muted); }
 
-      /* Services */
-      .services .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-      @media (max-width: 920px) { .services .cards { grid-template-columns: repeat(2, 1fr); } }
-      @media (max-width: 620px) { .services .cards { grid-template-columns: 1fr; } }
+      /* Services - rethought cards */
+      .services .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; align-items: start; }
+      @media (max-width: 920px) { .services .cards { gap: 20px; } }
+      @media (max-width: 620px) { .services .cards { grid-template-columns: 1fr; gap: 16px; } }
+
       .service-card {
-        position: relative; background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card-grad);
-        border: 1px solid rgba(255,255,255,.06); border-radius: 18px; padding: 22px; min-height: 180px;
-        overflow: hidden; transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; will-change: transform;
+        position: relative; display:block; border-radius: 18px; padding: calc(var(--card-padding) - 6px); min-height: 220px;
+        overflow: visible; transition: transform .42s cubic-bezier(.2,.9,.2,1), box-shadow .42s cubic-bezier(.2,.9,.2,1), border-color .28s ease, opacity .4s ease;
+        background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border: 1px solid rgba(255,255,255,.06);
+        -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+        transform-origin: center center; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,.35);
+        opacity: 0; transform: translateY(18px) scale(.996);
+      }
+      .service-card.in-view { opacity: 1; transform: translateY(0) scale(1); }
+      .service-card:hover, .service-card:focus-within { transform: translateY(-8px) scale(1.01); box-shadow: var(--card-elev); border-color: rgba(64,224,208,.22); }
+
+      /* internal layout */
+      .service-card .card-inner { position: relative; display: flex; gap:16px; align-items:flex-start; }
+      .service-card .card-media { width: 84px; height: 84px; flex: 0 0 84px; border-radius: 14px; display:grid; place-items:center; background: linear-gradient(180deg, rgba(64,224,208,.08), rgba(64,224,208,.02)); box-shadow: inset 0 0 0 1px rgba(64,224,208,.06); }
+      .service-card .service-icon { width: var(--service-icon-size); height: var(--service-icon-size); border-radius: 12px; display:grid; place-items:center; color: var(--turquoise); font-size:22px; }
+      .service-card .card-content { flex:1; }
+      .service-card .title { margin:0; font-size:1.06rem; font-weight:700; }
+      .service-card .desc { margin:6px 0 0; color:var(--muted); font-size:14px; line-height:1.4 }
+      .service-card .card-cta { margin-top:12px; display:inline-flex; gap:8px; align-items:center; font-size:13px; color:var(--turquoise); text-decoration:none; }
+
+      /* decorative blob and shine */
+      .service-card .bg-blob { position:absolute; right:-12px; top:-18px; width:160px; height:160px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(64,224,208,.06), transparent 60%); pointer-events:none; mix-blend-mode: screen; opacity:.85; transform: translateZ(0); }
+      .service-card .shine { position: absolute; inset: -30%; width: 160%; height: 160%; background: radial-gradient(closest-side, rgba(255,255,255,.04), transparent); pointer-events: none; transition: transform .22s ease; border-radius: inherit; }
+
+      /* Alternative: Editorial service list with background reveal */
+      .services { position: relative; overflow: hidden; }
+      .services::before { content:""; position:absolute; inset:-2%; background-image: var(--services-bg, none); background-size: cover; background-position: center; filter: saturate(.95) contrast(1.05) brightness(.9) blur(2px); opacity:.22; transform: scale(1.06); transition: opacity .45s ease, transform .8s ease; z-index: -2; }
+      .services::after { content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.28), rgba(0,0,0,.38)); z-index:-1; pointer-events:none; }
+      .services.is-active::before { opacity:.42; transform: scale(1.02); }
+
+      .services-reveal { display:grid; grid-template-columns: 1.05fr .95fr; gap:24px; align-items:start; }
+      @media (max-width: 920px) { .services-reveal { grid-template-columns: 1fr; } }
+
+      .service-list { display:grid; gap:12px; margin:0; padding:0; list-style:none; }
+      .service-item { display:flex; gap:14px; width:100%; text-align:left; border-radius:16px; padding:14px 16px; background: rgba(12,16,18,.5); border:1px solid rgba(255,255,255,.06); color:var(--white); cursor:pointer; align-items:flex-start; transition: background .25s ease, border-color .25s ease, transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s ease; position:relative; }
+      .service-item:hover, .service-item:focus-visible, .service-item[aria-selected="true"] { background: rgba(12,16,18,.72); border-color: rgba(64,224,208,.28); transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.35); }
+      .service-item:focus-visible { outline: 2px solid rgba(64,224,208,.4); outline-offset: 3px; }
+      .service-item .i { width:44px; height:44px; border-radius:12px; display:grid; place-items:center; color:var(--turquoise); background: rgba(64,224,208,.12); box-shadow: inset 0 0 0 1px rgba(64,224,208,.22); flex:0 0 auto; }
+      .service-item .text { display:grid; gap:6px; padding-right:24px; }
+      .service-item .label { font-weight:700; letter-spacing:.2px; }
+      .service-item .desc { color:var(--muted); font-size:14px; max-width:54ch; }
+      .service-item .chev { position:absolute; right:10px; top:50%; transform: translateY(-50%) translateX(0); color: var(--turquoise); opacity:.85; transition: transform .25s ease; }
+      .service-item:hover .chev, .service-item[aria-selected="true"] .chev { transform: translateY(-50%) translateX(3px); }
+
+      .service-viewport { position:relative; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08); min-height:320px; background: rgba(12,16,18,.5); }
+      .service-viewport .img { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transform: scale(1.04); transition: opacity .6s ease, transform 1.2s ease; will-change: opacity, transform; }
+      .service-viewport .img.is-active { opacity:1; transform: scale(1); }
+      .service-viewport .overlay { position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.55)); pointer-events:none; }
+      .service-viewport .caption { position:absolute; left:14px; right:14px; bottom:14px; display:grid; gap:6px; padding:10px 12px; background: rgba(10,14,16,.52); border:1px solid rgba(255,255,255,.08); border-radius:12px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+      .service-viewport .caption .t { font-weight:700; }
+      .service-viewport .caption .d { color:var(--muted); font-size:14px; }
+
+      /* Motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+        .service-item, .service-viewport .img, .services::before { transition: none !important; }
       }
       .service-card::before {
         content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--accent-grad);
@@ -143,10 +202,26 @@
       }
       .service-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 25px 60px rgba(0,0,0,.35); border-color: rgba(64,224,208,.35); }
       .service-card:hover::before { opacity: .42; }
-      .service-icon { width: 46px; height: 46px; border-radius: 12px; background: rgba(64,224,208,.12); display: grid; place-items: center; margin-bottom: 14px; color: var(--turquoise); box-shadow: inset 0 0 0 1px rgba(64,224,208,.22); }
+      .service-icon { width: var(--service-icon-size); height: var(--service-icon-size); border-radius: 12px; background: rgba(64,224,208,.12); display: grid; place-items: center; margin-bottom: 14px; color: var(--turquoise); box-shadow: inset 0 0 0 1px rgba(64,224,208,.22); }
       .service-card h3 { margin: 4px 0 6px; font-size: 18px; letter-spacing: .3px; }
       .service-card p { margin: 0; color: var(--muted); font-size: 14px; }
       .shine { position: absolute; top: -120%; left: -120%; width: 240%; height: 240%; background: radial-gradient(closest-side, rgba(64,224,208,.18), transparent); transform: translate3d(0,0,0); pointer-events: none; transition: transform .2s ease; }
+      /* Modern interaction additions */
+      .service-card.is-tilting { box-shadow: 0 30px 60px rgba(0,0,0,.45); }
+      .service-card { display:flex; flex-direction:column; justify-content:flex-start; gap:12px; padding:26px; }
+      .service-card .meta { display:block; transition: transform .28s cubic-bezier(.2,.9,.2,1), opacity .28s ease; }
+      .service-card .service-icon { transition: transform .28s cubic-bezier(.2,.9,.2,1), box-shadow .28s ease; }
+      .service-card:hover .service-icon, .service-card:focus .service-icon { transform: scale(1.06) translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.35) inset; }
+      .service-card:hover .meta, .service-card:focus .meta { transform: translateY(-6px); }
+      .service-card .title { font-weight:700; font-size:1.05rem; }
+      .service-card .desc { color:var(--muted); font-size:14px; margin-top:4px; }
+      .service-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(180deg, rgba(255,255,255,.01), rgba(0,0,0,.06)); mix-blend-mode: overlay; opacity: .12; }
+      .service-card:active { transform: translateY(2px) scale(.997); }
+      .service-card:focus-visible { outline: 3px solid rgba(64,224,208,.18); outline-offset: 6px; border-color: rgba(64,224,208,.28); }
+      /* Reduced-motion friendly defaults */
+      @media (prefers-reduced-motion: reduce) {
+        .service-card, .service-card .service-icon, .shine, .service-card .meta { transition: none !important; transform: none !important; }
+      }
 
       /* Gallery / Swiper */
       .gallery { position: relative; }
@@ -326,43 +401,82 @@
           <h2 data-splitting>What we create</h2>
           <p>From intimate vows to grand celebrations — we document every breath of your day in luminous color and elegant contrast.</p>
         </div>
-        <div class="cards">
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-heart-3-line"></i></div>
-            <h3>Weddings</h3>
-            <p>Editorial storytelling that blends fine-art composition with genuine emotion.</p>
-          </article>
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-sparkling-2-line"></i></div>
-            <h3>Engagements</h3>
-            <p>Sun-kissed sessions tailored to your story — elegant, candid, and full of light.</p>
-          </article>
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-film-line"></i></div>
-            <h3>Cinematic Films</h3>
-            <p>Movement and music woven into time — a film you’ll feel forever.</p>
-          </article>
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-camera-lens-line"></i></div>
-            <h3>Editorial Portraits</h3>
-            <p>Magazine-grade portraits — refined details, luminous skin tones, pristine styling.</p>
-          </article>
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-sun-foggy-line"></i></div>
-            <h3>Destination</h3>
-            <p>From Amalfi to Kyoto — we travel worldwide to craft memories in dream light.</p>
-          </article>
-          <article class="service-card" data-tilt data-tilt-max="10" data-tilt-glare data-tilt-max-glare="0.25">
-            <div class="shine"></div>
-            <div class="service-icon"><i class="ri-vip-diamond-line"></i></div>
-            <h3>Luxury Albums</h3>
-            <p>Museum-grade prints and hand-bound albums designed to last generations.</p>
-          </article>
+        <div class="services-reveal" id="servicesReveal">
+          <ul class="service-list" role="tablist" aria-label="Services">
+            <li>
+              <button class="service-item" role="tab" aria-selected="true" data-bg="./images/Image 11.jpg" data-title="Weddings" data-desc="Editorial storytelling that blends fine-art composition with genuine emotion.">
+                <span class="i"><i class="ri-heart-3-line"></i></span>
+                <span class="text">
+                  <span class="label">Weddings</span>
+                  <span class="desc">Editorial storytelling that blends fine-art composition with genuine emotion.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+            <li>
+              <button class="service-item" role="tab" aria-selected="false" data-bg="./images/Image 18.jpg" data-title="Engagements" data-desc="Sun-kissed sessions tailored to your story — elegant, candid, and full of light.">
+                <span class="i"><i class="ri-sparkling-2-line"></i></span>
+                <span class="text">
+                  <span class="label">Engagements</span>
+                  <span class="desc">Sun-kissed sessions tailored to your story — elegant, candid, and full of light.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+            <li>
+              <button class="service-item" role="tab" aria-selected="false" data-bg="./images/Image 19.jpg" data-title="Cinematic Films" data-desc="Movement and music woven into time — a film you’ll feel forever.">
+                <span class="i"><i class="ri-film-line"></i></span>
+                <span class="text">
+                  <span class="label">Cinematic Films</span>
+                  <span class="desc">Movement and music woven into time — a film you’ll feel forever.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+            <li>
+              <button class="service-item" role="tab" aria-selected="false" data-bg="./images/Image 21.jpg" data-title="Editorial Portraits" data-desc="Magazine-grade portraits — refined details, luminous skin tones, pristine styling.">
+                <span class="i"><i class="ri-camera-lens-line"></i></span>
+                <span class="text">
+                  <span class="label">Editorial Portraits</span>
+                  <span class="desc">Magazine-grade portraits — refined details, luminous skin tones, pristine styling.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+            <li>
+              <button class="service-item" role="tab" aria-selected="false" data-bg="./images/Image 23.jpg" data-title="Destination" data-desc="From Amalfi to Kyoto — we travel worldwide to craft memories in dream light.">
+                <span class="i"><i class="ri-sun-foggy-line"></i></span>
+                <span class="text">
+                  <span class="label">Destination</span>
+                  <span class="desc">From Amalfi to Kyoto — we travel worldwide to craft memories in dream light.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+            <li>
+              <button class="service-item" role="tab" aria-selected="false" data-bg="./images/Image 7.jpg" data-title="Luxury Albums" data-desc="Museum-grade prints and hand-bound albums designed to last generations.">
+                <span class="i"><i class="ri-vip-diamond-line"></i></span>
+                <span class="text">
+                  <span class="label">Luxury Albums</span>
+                  <span class="desc">Museum-grade prints and hand-bound albums designed to last generations.</span>
+                </span>
+                <span class="chev" aria-hidden="true"><i class="ri-arrow-right-line"></i></span>
+              </button>
+            </li>
+          </ul>
+          <div class="service-viewport" role="tabpanel" aria-live="polite">
+            <div class="img is-active" style="background-image:url('./images/Image 11.jpg')"></div>
+            <div class="img" style="background-image:url('./images/Image 18.jpg')"></div>
+            <div class="img" style="background-image:url('./images/Image 19.jpg')"></div>
+            <div class="img" style="background-image:url('./images/Image 21.jpg')"></div>
+            <div class="img" style="background-image:url('./images/Image 23.jpg')"></div>
+            <div class="img" style="background-image:url('./images/Image 7.jpg')"></div>
+            <div class="overlay" aria-hidden="true"></div>
+            <div class="caption" aria-live="polite">
+              <div class="t">Weddings</div>
+              <div class="d">Editorial storytelling that blends fine-art composition with genuine emotion.</div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -708,29 +822,47 @@
         });
       }
 
-      // Shine effect tracking
-      document.querySelectorAll('.service-card').forEach(card => {
-        const shine = card.querySelector('.shine');
-        card.addEventListener('pointermove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          shine.style.transform = `translate(${x - rect.width * 0.5}px, ${y - rect.height * 0.5}px)`;
-        });
-      });
+      // (Removed) legacy shine tracking for old cards
 
-      // VanillaTilt (guarded)
-      if (window.VanillaTilt) {
-        try {
-          VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
-            speed: 600,
-            max: 10,
-            glare: true,
-            'max-glare': 0.25,
-            gyroscope: true
+      // Lightweight card interactions (pointer tilt + shine + keyboard accessibility)
+      // (Removed) legacy card tilt interactions
+
+      // Services: background reveal and sticky viewport
+      (function initServicesReveal(){
+        const section = document.querySelector('.services');
+        const list = document.querySelector('.service-list');
+        const imgs = Array.from(document.querySelectorAll('.service-viewport .img'));
+        const caption = document.querySelector('.service-viewport .caption');
+        if (!section || !list || !imgs.length) return;
+
+        section.classList.add('is-active');
+        const items = Array.from(list.querySelectorAll('.service-item'));
+        const setActive = (idx) => {
+          items.forEach((b,i)=> b.setAttribute('aria-selected', String(i===idx)));
+          imgs.forEach((im,i)=> im.classList.toggle('is-active', i===idx));
+          const bg = items[idx]?.dataset.bg;
+          if (bg) section.style.setProperty('--services-bg', `url('${bg}')`);
+          if (caption) {
+            const t = items[idx]?.dataset.title || '';
+            const d = items[idx]?.dataset.desc || '';
+            const tEl = caption.querySelector('.t');
+            const dEl = caption.querySelector('.d');
+            if (tEl) tEl.textContent = t;
+            if (dEl) dEl.textContent = d;
+          }
+        };
+        let current = 0; setActive(current);
+
+        items.forEach((btn, idx) => {
+          btn.addEventListener('mouseenter', ()=> setActive(idx));
+          btn.addEventListener('focus', ()=> setActive(idx));
+          btn.addEventListener('click', ()=> setActive(idx));
+          btn.addEventListener('keydown', (e)=>{
+            if (e.key==='ArrowDown' || e.key==='ArrowRight') { e.preventDefault(); setActive(Math.min(items.length-1, idx+1)); items[Math.min(items.length-1, idx+1)].focus(); }
+            if (e.key==='ArrowUp' || e.key==='ArrowLeft') { e.preventDefault(); setActive(Math.max(0, idx-1)); items[Math.max(0, idx-1)].focus(); }
           });
-        } catch(e) {}
-      }
+        });
+      })();
 
       // Swiper gallery
       const swiper = window.Swiper ? new Swiper('#gallerySwiper', {
